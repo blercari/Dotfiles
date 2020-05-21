@@ -15,3 +15,7 @@ ln -s $dotfiles_dir/.config/qtile $HOME/.config
 # Awesome
 rm -rf $HOME/.config/awesome
 ln -s $dotfiles_dir/.config/awesome $HOME/.config
+
+# Redshift
+rm -rf $HOME/.config/redshift
+ln -s $dotfiles_dir/.config/redshift $HOME/.config

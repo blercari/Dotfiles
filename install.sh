@@ -11,7 +11,3 @@ ln -s $dotfiles_dir/.config/nvim $HOME/.config
 # Qtile
 rm -rf $HOME/.config/qtile
 ln -s $dotfiles_dir/.config/qtile $HOME/.config
-
-# Awesome
-rm -rf $HOME/.config/awesome
-ln -s $dotfiles_dir/.config/awesome $HOME/.config

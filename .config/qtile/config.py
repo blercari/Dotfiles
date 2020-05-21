@@ -24,11 +24,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import subprocess
+from libqtile import hook
+
 from libqtile.config import Key, Screen, Group, Drag, Click
 from libqtile.lazy import lazy
 from libqtile import layout, bar, widget
 
 from typing import List  # noqa: F401
+
+@hook.subscribe.startup_once
+def autostart():
+    home = os.path.expanduser('~')
+    subprocess.call([home + '/.config/qtile/autostart.sh'])
 
 mod = "mod4"
 
@@ -52,8 +61,8 @@ keys = [
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
     Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
-    Key([mod], "Return", lazy.spawn("konsole")),
-    Key([mod], "t", lazy.spawn("konsole")),
+    Key([mod], "Return", lazy.spawn("alacritty")),
+    Key([mod], "t", lazy.spawn("alacritty")),
     Key([mod], "b", lazy.spawn("firefox")),
 
     # Toggle between different layouts as defined below
@@ -82,7 +91,7 @@ for i in groups:
 
 layouts = [
     layout.Max(),
-    layout.MonadTall(),
+    layout.MonadTall(margin=4),
     layout.MonadWide(align=1, ratio=0.4),
     layout.Stack(num_stacks=2),
     # Try more layouts by unleashing below layouts.

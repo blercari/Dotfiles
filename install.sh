@@ -11,3 +11,7 @@ ln -s $dotfiles_dir/.config/nvim $HOME/.config
 # Qtile
 rm -rf $HOME/.config/qtile
 ln -s $dotfiles_dir/.config/qtile $HOME/.config
+
+# Redshift
+rm -rf $HOME/.config/redshift
+ln -s $dotfiles_dir/.config/redshift $HOME/.config

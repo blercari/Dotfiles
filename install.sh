@@ -5,6 +5,7 @@ dotfiles_dir=$(dirname $(readlink -f $0))
 mkdir -p $HOME/.config
 
 # Neovim
+rm -f $HOME/.local/share/nvim/site/autoload/plug.vim
 rm -rf $HOME/.config/nvim
 ln -s $dotfiles_dir/.config/nvim $HOME/.config
 

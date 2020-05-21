@@ -5,6 +5,18 @@ set shiftwidth=4
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
 
+" vim-plug installation (plugins will be installed on first Neovim startup)
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+
+	silent !sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"
+		\/nvim/site/autoload/plug.vim --create-dirs
+		\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+	autocmd VimEnter * PlugInstall --sync | source ~/.config/nvim/init.vim
+
+endif
+
+
 call plug#begin('~/.vim/plugged')
 
 " Gruvbox theme

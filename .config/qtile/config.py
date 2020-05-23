@@ -1,29 +1,3 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 import os
 import subprocess
 from libqtile import hook
@@ -38,6 +12,10 @@ from typing import List  # noqa: F401
 def autostart():
     home = os.path.expanduser('~')
     subprocess.call([home + '/.config/qtile/autostart.sh'])
+
+##############################################################################
+
+# KEYBINDINGS
 
 mod = "mod4"
 
@@ -75,40 +53,105 @@ keys = [
     Key([mod], "r", lazy.spawncmd()),
 ]
 
-groups = [Group(i, layout='monadtall') for i in "123456789"]
+##############################################################################
 
-for i in groups:
+# GROUPS
+
+group_names = ['WEB', 'DEV', 'FILES', 'MUSIC']
+groups = [Group(name, layout='monadtall') for name in group_names]
+
+for g in groups:
     keys.extend([
-        # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen()),
+        # Switch to group with 'mod + goup number'
+        Key([mod], str(group_names.index(g.name) + 1),
+            lazy.group[g.name].toscreen()),
 
-        # mod1 + shift + letter of group = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=True)),
-        # Or, use below if you prefer not to switch to that group.
+        # Switch to and move focused window to group
+        # with 'mod + shift + group number'
+        Key([mod, "shift"], str(group_names.index(g.name) + 1),
+            lazy.window.togroup(g.name, switch_group=True)),
+        # Or, use below if you prefer not to switch to that group
         # # mod1 + shift + letter of group = move focused window to group
-        # Key([mod, "shift"], i.name, lazy.window.togroup(i.name)),
+        # Key([mod, "shift"], str(group_names.index(g.name) + 1),
+        #     lazy.window.togroup(g.name)),
     ])
 
+##############################################################################
+
+# COLORS
+
+colors = {
+    # Adapta theme key colors
+    'selection': '#00bcd4',
+    'accent': '#4db6ac',
+    'suggestion': '#009688',
+    'destruction': '#ff5252',
+
+    # Material Design colors
+    'cyan300': '#4dd0e1',
+    'cyan500': '#00bcd4',
+    'teal300': '#4db6ac',
+    'teal500': '#009688',
+    'grey50': '#fafafa',
+    'grey100': '#f5f5f5',
+    'grey200': '#eeeeee',
+    'grey300': '#e0e0e0',
+    'grey400': '#bdbdbd',
+    'grey500': '#9e9e9e',
+    'grey600': '#757575',
+    'grey800': '#424242',
+    'grey900': '#212121',
+    'blueGrey50': '#eceff1',
+    'blueGrey100': '#cfd8dc',
+    'blueGrey200': '#b0bec5',
+    'blueGrey300': '#90a4ae',
+    'blueGrey400': '#78909c',
+    'blueGrey500': '#607d8b',
+    'blueGrey600': '#546e7a',
+    'blueGrey700': '#455a64',
+    'blueGrey800': '#37474f',
+    'blueGrey900': '#263238',
+}
+
+##############################################################################
+
+# LAYOUTS
+
 layouts = [
+    layout.MonadTall(
+        border_focus=colors['teal300'],
+        border_normal=colors['grey600'],
+        border_width=1,
+        margin=8,
+        single_border_width=0,
+        single_margin=0,
+    ),
+
     layout.Max(),
-    layout.MonadTall(margin=4),
-    layout.MonadWide(align=1, ratio=0.4),
-    layout.Stack(num_stacks=2),
-    # Try more layouts by unleashing below layouts.
-    layout.Bsp(),
-    # layout.Columns(),
-    # layout.Matrix(),
-    layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    layout.VerticalTile(),
-    # layout.Zoomy(),
+
+    # layout.MonadWide(
+    #     border_focus=colors['teal300'],
+    #     border_normal=colors['grey600'],
+    #     border_width=1,
+    #     margin=8
+    # ),
+
+    layout.Stack(
+        border_focus=colors['teal300'],
+        border_normal=colors['grey600'],
+        border_width=2,
+        margin=8,
+    ),
 ]
 
+##############################################################################
+
+# WIDGETS
+
 widget_defaults = dict(
-    font='Ubuntu',
+    font='Noto Sans Medium',
     fontsize=12,
-    padding=3,
+    padding=5,
 )
 extension_defaults = widget_defaults.copy()
 
@@ -116,22 +159,76 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayout(),
-                widget.CurrentLayoutIcon(),
-                widget.GroupBox(highlight_method='line', this_current_screen_border='00ff00'),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.TextBox("default config", name="default"),
+                # widget.CurrentLayout(foreground=colors['blueGrey100']),
+
+                widget.CurrentLayoutIcon(scale=0.75),
+
+                widget.GroupBox(
+                    # Active groups (at least one client open) font color
+                    active=colors['blueGrey100'],
+
+                    foreground=colors['blueGrey100'],
+
+                    # Current group highlight color, here,
+                    # it is set the same as the bar color
+                    highlight_color=[colors['blueGrey900'],
+                                     colors['blueGrey900']],
+
+                    highlight_method='line',
+
+                    # Inactive groups font color
+                    inactive=colors['blueGrey500'],
+
+                    # Text vertical alignment
+                    margin=5,
+
+                    padding=0,
+
+                    # Current group in current screen line color
+                    this_current_screen_border=colors['cyan500'],
+                ),
+
+                widget.Prompt(foreground=colors['blueGrey100']),
+
+                widget.WindowName(
+                    font='Noto Sans Bold',
+                    foreground=colors['blueGrey200'],
+                ),
+
                 widget.Systray(),
-                widget.Volume(step=5, update_interval=0.1),
-                widget.KeyboardLayout(configured_keyboards=['us intl', 'us altgr-intl']),
-                widget.Clock(format='%a %d/%m, %H:%M'),
-                widget.QuickExit(),
+
+                widget.Spacer(2),
+
+                widget.Volume(
+                    step=5,
+                    update_interval=0.1,
+                    foreground=colors['blueGrey100'],
+                ),
+
+                widget.KeyboardLayout(
+                    configured_keyboards=['us intl', 'us altgr-intl'],
+                    foreground=colors['blueGrey100'],
+                ),
+
+                widget.Clock(
+                    format='%a %d/%m, %H:%M',
+                    foreground=colors['blueGrey100'],
+                ),
+
+                widget.QuickExit(
+                    default_text='⏻',
+                    fontsize=16,
+                    foreground=colors['blueGrey100'],
+                ),
             ],
-            24,
+            size=24,
+            background=colors['blueGrey900'],
+            opacity=0.95,
         ),
     ),
 ]
+
+##############################################################################
 
 # Drag floating layouts.
 mouse = [
@@ -148,23 +245,27 @@ main = None
 follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
-floating_layout = layout.Floating(float_rules=[
-    # Run the utility of `xprop` to see the wm class and name of an X client.
-    {'wmclass': 'confirm'},
-    {'wmclass': 'dialog'},
-    {'wmclass': 'download'},
-    {'wmclass': 'error'},
-    {'wmclass': 'file_progress'},
-    {'wmclass': 'notification'},
-    {'wmclass': 'splash'},
-    {'wmclass': 'toolbar'},
-    {'wmclass': 'confirmreset'},  # gitk
-    {'wmclass': 'makebranch'},  # gitk
-    {'wmclass': 'maketag'},  # gitk
-    {'wname': 'branchdialog'},  # gitk
-    {'wname': 'pinentry'},  # GPG key password entry
-    {'wmclass': 'ssh-askpass'},  # ssh-askpass
-])
+floating_layout = layout.Floating(
+    float_rules=[
+        # Run the utility of `xprop` to see the wm class and name of an X client.
+        {'wmclass': 'confirm'},
+        {'wmclass': 'dialog'},
+        {'wmclass': 'download'},
+        {'wmclass': 'error'},
+        {'wmclass': 'file_progress'},
+        {'wmclass': 'notification'},
+        {'wmclass': 'splash'},
+        {'wmclass': 'toolbar'},
+        {'wmclass': 'confirmreset'},  # gitk
+        {'wmclass': 'makebranch'},  # gitk
+        {'wmclass': 'maketag'},  # gitk
+        {'wname': 'branchdialog'},  # gitk
+        {'wname': 'pinentry'},  # GPG key password entry
+        {'wmclass': 'ssh-askpass'},  # ssh-askpass
+    ],
+    border_focus=colors['teal300'],
+    border_normal=colors['grey600'],
+)
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 

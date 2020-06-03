@@ -1,0 +1,110 @@
+#!/bin/python3
+
+"""
+This script uses pactl to control volume levels and mute/unmute the output. Its
+purpose is to overcome pactl limitations when it comes to restrict the maximum
+volume level.
+"""
+
+import os
+
+# error types
+class MissingCommand(Exception):
+    pass
+class InvalidCommand(Exception):
+    pass
+class MissingValue(Exception):
+    pass
+class InvalidValue(Exception):
+    pass
+
+def exit_code(key):
+    exit_code = {
+        'OK': 0,
+        'missing_command': 1,
+        'invalid_command': 2,
+        'missing_value': 3,
+        'invalid_value': 4,
+    }
+    return exit_code[key]
+
+def print_error_message(exception, *args):
+    # first, print a message describing the error
+    if (exception == MissingCommand):
+        print("ERROR: No command specified")
+    elif (exception == InvalidCommand):
+        print(f"ERROR: Invalid command '{args[1]}'")
+    elif (exception == MissingValue):
+        print("ERROR: No VOLUME or STEP value specified")
+    elif (exception == InvalidValue):
+        print(f"ERROR: Invalid VOLUME or STEP value '{args[2]}'")
+
+    # then, print the usage message
+    print(f"Usage: {os.path.basename(args[0])}"
+           " (set VOLUME | set (+|-)STEP | toggle)")
+
+def current_volume():
+    return int(os.popen(
+        "pactl list sinks | grep \'^[[:space:]]Volume: \' "\
+        "| awk \'{gsub(\"%\",\"\");print $5}\'"
+    ).read())
+
+def raise_volume(step):
+    if current_volume() + step < 100:
+        os.system(f"pactl set-sink-volume 0 +{step}%")
+    else:
+        os.system("pactl set-sink-volume 0 100%")
+
+def lower_volume(step):
+    if current_volume() - step > 0:
+        os.system(f"pactl set-sink-volume 0 -{step}%")
+    else:
+        os.system("pactl set-sink-volume 0 0%")
+
+
+def set_volume(volume):
+    if volume < 100:
+        os.system(f"pactl set-sink-volume 0 {volume}%")
+    else:
+        os.system("pactl set-sink-volume 0 100%")
+
+def toggle_mute():
+    os.system("pactl set-sink-mute 0 toggle")
+
+def main(*args):
+    # get command
+    try:
+        command = args[1]
+        if (command not in ['set', 'toggle']):
+            raise InvalidCommand
+    except IndexError:
+        print_error_message(MissingCommand, *args)
+        return exit_code('missing_command')
+    except InvalidCommand:
+        print_error_message(InvalidCommand, *args)
+        return exit_code('invalid_command')
+
+    # run command
+    if (command == 'set'):
+        try:
+            argument = args[2]
+            if (argument[0] == "+"):
+                raise_volume(int(argument))
+            elif (argument[0] == "-"):
+                lower_volume(-int(argument))
+            else:
+                set_volume(int(argument))
+        except IndexError:
+            print_error_message(MissingValue, *args)
+            return exit_code('missing_value')
+        except ValueError:
+            print_error_message(InvalidValue, *args)
+            return exit_code('invalid_value')
+    elif (command == "toggle"):
+        toggle_mute()
+
+    return exit_code('OK')
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main(*sys.argv))

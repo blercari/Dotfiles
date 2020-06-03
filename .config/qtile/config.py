@@ -51,6 +51,38 @@ keys = [
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
     Key([mod], "r", lazy.spawncmd()),
+
+    # Function keys
+    Key(
+        [],
+        "XF86AudioMute",
+        lazy.spawn("volctl toggle")
+    ),
+    Key(
+        [],
+        "XF86AudioRaiseVolume",
+        lazy.spawn("volctl set +5")
+    ),
+    Key(
+        [],
+        "XF86AudioLowerVolume",
+        lazy.spawn("volctl set -5")
+    ),
+    Key(
+        [],
+        "XF86AudioMicMute",
+        lazy.spawn("amixer set Capture toggle")
+    ),
+    Key(
+        [],
+        "XF86MonBrightnessDown",
+        lazy.spawn("brightnessctl set 10%-")
+    ),
+    Key(
+        [],
+        "XF86MonBrightnessUp",
+        lazy.spawn("brightnessctl set +10%")
+    ),
 ]
 
 ##############################################################################

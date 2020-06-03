@@ -20,3 +20,8 @@ ln -s $dotfiles_dir/.config/awesome $HOME/.config
 # Redshift
 rm -rf $HOME/.config/redshift
 ln -s $dotfiles_dir/.config/redshift $HOME/.config
+
+# Volume control script
+mkdir -p $HOME/.local/bin
+rm -rf $HOME/.local/bin/volctl
+ln -s $dotfiles_dir/.local/bin/volctl $HOME/.local/bin

@@ -8,6 +8,8 @@ from libqtile import layout, bar, widget
 
 from typing import List  # noqa: F401
 
+from custom_layouts import custom_stack
+
 @hook.subscribe.startup_once
 def autostart():
     home = os.path.expanduser('~')
@@ -21,36 +23,45 @@ mod = "mod4"
 
 keys = [
     # Switch between windows in current stack pane
-    Key([mod], "k", lazy.layout.down()),
-    Key([mod], "j", lazy.layout.up()),
+    Key([mod], "j", lazy.layout.down()),
+    Key([mod], "k", lazy.layout.up()),
 
     # Move windows up or down in current stack
-    Key([mod, "control"], "k", lazy.layout.shuffle_down()),
-    Key([mod, "control"], "j", lazy.layout.shuffle_up()),
+    Key([mod, "control"], "j", lazy.layout.shuffle_down()),
+    Key([mod, "control"], "k", lazy.layout.shuffle_up()),
 
-    # Switch window focus to other pane(s) of stack
-    Key([mod], "space", lazy.layout.next()),
+    # Switch window focus to other stack pane
+    Key([mod], "l", lazy.layout.next()),
+    Key([mod], "h", lazy.layout.previous()),
+
+    # Send client to other stack pane
+    Key([mod, "control"], "l", lazy.layout.client_to_next()),
+    Key([mod, "control"], "h", lazy.layout.client_to_previous()),
+
+    # Swap client with master
+    # Key([mod, "control"], "Return", lazy.layout.swap_main()),
 
     # Swap panes of split stack
-    Key([mod, "shift"], "space", lazy.layout.rotate()),
+    Key([mod, "control"], "space", lazy.layout.rotate()),
 
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split()),
-    Key([mod], "Return", lazy.spawn("alacritty")),
+    # Toggle vertical split in current stack pane
+    Key([mod], "Return", lazy.layout.toggle_split()),
+
+    # Close current window
+    Key([mod], "q", lazy.window.kill()),
+
+    # Launch applications
+    Key([mod], "r", lazy.spawncmd()),
     Key([mod], "t", lazy.spawn("alacritty")),
     Key([mod], "b", lazy.spawn("firefox")),
 
-    # Toggle between different layouts as defined below
+    # Cycle through different layouts
     Key([mod], "Tab", lazy.next_layout()),
     Key([mod, "shift"], "Tab", lazy.prev_layout()),
-    Key([mod], "w", lazy.window.kill()),
 
-    Key([mod, "control"], "r", lazy.restart()),
-    Key([mod, "control"], "q", lazy.shutdown()),
-    Key([mod], "r", lazy.spawncmd()),
+    # Restart Qtile and log off
+    Key([mod, "shift"], "r", lazy.restart()),
+    Key([mod, "shift"], "q", lazy.shutdown()),
 
     # Function keys
     Key(
@@ -90,7 +101,7 @@ keys = [
 # GROUPS
 
 group_names = ['WEB', 'DEV', 'FILES', 'MUSIC']
-groups = [Group(name, layout='monadtall') for name in group_names]
+groups = [Group(name, layout='customstack') for name in group_names]
 
 for g in groups:
     keys.extend([
@@ -150,30 +161,25 @@ colors = {
 # LAYOUTS
 
 layouts = [
-    layout.MonadTall(
-        border_focus=colors['teal300'],
-        border_normal=colors['grey600'],
-        border_width=1,
-        margin=8,
-        single_border_width=0,
-        single_margin=0,
-    ),
-
-    layout.Max(),
-
-    # layout.MonadWide(
-    #     border_focus=colors['teal300'],
-    #     border_normal=colors['grey600'],
-    #     border_width=1,
-    #     margin=8
-    # ),
-
-    layout.Stack(
+    custom_stack.CustomStack(
+        autosplit=[False, False],
         border_focus=colors['teal300'],
         border_normal=colors['grey600'],
         border_width=2,
         margin=8,
+        max_single=True,
     ),
+
+    # layout.MonadTall(
+    #     border_focus=colors['teal300'],
+    #     border_normal=colors['grey600'],
+    #     border_width=1,
+    #     margin=8,
+    #     single_border_width=0,
+    #     single_margin=0,
+    # ),
+
+    layout.Max(),
 ]
 
 ##############################################################################

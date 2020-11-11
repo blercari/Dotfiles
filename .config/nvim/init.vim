@@ -30,6 +30,8 @@ Plug 'tmsvg/pear-tree'
 Plug 'sheerun/vim-polyglot'
 " Highlight color codes
 Plug 'ap/vim-css-color'
+" Coc completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Highlight yanked text
 Plug 'machakann/vim-highlightedyank'
 
@@ -101,3 +103,12 @@ autocmd FileType * set formatoptions+=r
 " Disable auto pair repeat
 let g:pear_tree_repeatable_expand = 0
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" COC
+
+" Navigate through Coc completion with <Tab> and <S-Tab>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Close preview with <Esc>
+" inoremap <expr> <Esc> pumvisible() ? "\<C-d>" : "\<Esc>"

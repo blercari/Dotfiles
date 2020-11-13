@@ -26,6 +26,10 @@ Plug 'tpope/vim-commentary'
 " Automatically insert or delete brackets, parentheses, quotes, etc.
 " Plug 'jiangmiao/auto-pairs'
 Plug 'tmsvg/pear-tree'
+" Additional text objects to operate
+Plug 'wellle/targets.vim'
+" Indent text object
+Plug 'michaeljsmith/vim-indent-object'
 " Improved syntax highlighting for multiple languages
 Plug 'sheerun/vim-polyglot'
 " Highlight color codes

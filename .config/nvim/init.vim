@@ -1,8 +1,3 @@
-" Tab and indentation width
-set tabstop=4
-set shiftwidth=4
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
 
 " vim-plug installation (plugins will be installed on first Neovim startup)
@@ -58,6 +53,11 @@ let g:gruvbox_hls_cursor = 'red'
 colorscheme gruvbox
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" GENERAL
+
+" Tab and indentation width
+set tabstop=4
+set shiftwidth=4
 
 " Relative numbers, with current line absolute number
 set number relativenumber
@@ -106,6 +106,45 @@ autocmd FileType * set formatoptions+=r
 
 " Disable auto pair repeat
 let g:pear_tree_repeatable_expand = 0
+
+" Auto detect Arduino .cpp files by looking for '#include <Arduino.h>' directive
+function! s:DetectArduinoFile()
+	let file_path = expand('%:p')
+	let number_of_lines = system('wc -l ' . file_path)
+
+	let i = 1
+	while i <= number_of_lines
+		let line = getline(i)
+		if line =~ '^\s*$'
+			let i += 1
+		elseif line =~ '^\s*//'
+			let i += 1
+		elseif line =~ '^\s*/\*'
+			while i <= number_of_lines
+				let line = getline(i)
+				if line =~ '\*/'
+					let i += 1
+					break
+				else
+					let i += 1
+				endif
+			endwhile
+		elseif line =~ '^\s*#'
+			if line =~ '^\s*#include <Arduino.h>'
+				set filetype=arduino
+				break
+			else
+				let i += 1
+			endif
+		else
+			break
+		endif
+	endwhile
+endfun
+autocmd BufRead,BufWrite *.{c++,cc,cp,cpp,cxx,C,CPP,h,hh,hpp} call s:DetectArduinoFile()
+
+" Auto detect Octave .m files
+autocmd BufNewFile,BufRead *.m set filetype=octave
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COC

@@ -31,6 +31,11 @@ Plug 'sheerun/vim-polyglot'
 Plug 'ap/vim-css-color'
 " Coc completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" fzf fuzzy finder
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+" Change working directory to project root
+Plug 'airblade/vim-rooter'
 " Highlight yanked text
 Plug 'machakann/vim-highlightedyank'
 
@@ -63,7 +68,7 @@ set shiftwidth=4
 set number relativenumber
 
 " Highlight current line
-set cursorline
+autocmd VimEnter,WinEnter,BufWinEnter * set cursorline
 
 " Invisible characters
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
@@ -103,6 +108,10 @@ set clipboard=unnamedplus
 autocmd FileType * set formatoptions-=o
 " Insert current comment leader when hitting <Enter> in insert mode
 autocmd FileType * set formatoptions+=r
+
+" New split location
+set splitbelow
+set splitright
 
 " Disable auto pair repeat
 let g:pear_tree_repeatable_expand = 0
@@ -155,3 +164,15 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Close preview with <Esc>
 " inoremap <expr> <Esc> pumvisible() ? "\<C-d>" : "\<Esc>"
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF
+
+" Redefine fzf rg command to search only file content (excluding file names)
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --hidden --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+
+" Launch fzf default command with <Ctrl>p
+nnoremap <silent> <C-p> :FZF<CR>
+
+" Launch fzf rg command with <Ctrl>n
+nnoremap <silent> <C-n> :Rg<CR>

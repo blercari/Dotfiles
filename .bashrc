@@ -49,6 +49,12 @@ case ${TERM} in
 		;;
 esac
 
+# set rg as fzf default command
+if type rg &> /dev/null; then
+	export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!**/.git'"
+	export FZF_DEFAULT_OPTS='--bind=btab:up,tab:down --layout=reverse --no-multi'
+fi
+
 ##############################################################################
 # PROMPT SETUP
 

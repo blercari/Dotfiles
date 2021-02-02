@@ -1,3 +1,4 @@
 .config/nvim/.netrwhist
 .config/qtile/__pycache__/
 .config/qtile/custom_layouts/__pycache__/
+.config/zsh/.zcompdump

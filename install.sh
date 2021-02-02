@@ -4,7 +4,7 @@ dotfiles_dir=$(dirname $(readlink -f $0))
 
 source $dotfiles_dir/prompt-for-multiselect.sh
 
-components=(".bashrc" "Neovim" "Qtile" "AwesomeWM" "Redshift" "Volume control script")
+components=("Bash" "Zsh" "Neovim" "Qtile" "AwesomeWM" "Redshift" "Volume control script")
 
 ###############################################################################
 # ASK USER WHAT TO INSTALL
@@ -37,13 +37,22 @@ if [[ -z ${checked} ]]; then
 	exit 0
 fi
 
-# .bashrc
+# Bash
 if [[ " ${checked[@]} " =~ " ${components[0]} " ]]; then
 	ln -sf $dotfiles_dir/.bashrc $HOME
 fi
 
-# Neovim
+# Zsh
 if [[ " ${checked[@]} " =~ " ${components[1]} " ]]; then
+	ln -sf $dotfiles_dir/.zshenv $HOME
+	mkdir -p $HOME/.config
+	mkdir -p $HOME/.cache/zsh
+	rm -rf $HOME/.config/zsh
+	ln -s $dotfiles_dir/.config/zsh $HOME/.config
+fi
+
+# Neovim
+if [[ " ${checked[@]} " =~ " ${components[2]} " ]]; then
 	rm -f $HOME/.local/share/nvim/site/autoload/plug.vim
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/nvim
@@ -51,28 +60,28 @@ if [[ " ${checked[@]} " =~ " ${components[1]} " ]]; then
 fi
 
 # Qtile
-if [[ " ${checked[@]} " =~ " ${components[2]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[3]} " ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/qtile
 	ln -s $dotfiles_dir/.config/qtile $HOME/.config
 fi
 
 # Awesome
-if [[ " ${checked[@]} " =~ " ${components[3]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[4]} " ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/awesome
 	ln -s $dotfiles_dir/.config/awesome $HOME/.config
 fi
 
 # Redshift
-if [[ " ${checked[@]} " =~ " ${components[4]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[5]} " ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/redshift
 	ln -s $dotfiles_dir/.config/redshift $HOME/.config
 fi
 
 # Volume control script
-if [[ " ${checked[@]} " =~ " ${components[5]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[6]} " ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/volctl $HOME/.local/bin
 fi

@@ -19,8 +19,9 @@ Plug 'morhetz/gruvbox'
 " Comments
 Plug 'tpope/vim-commentary'
 " Automatically insert or delete brackets, parentheses, quotes, etc.
+" Plug 'tmsvg/pear-tree'  " pear-tree conflicts with coc-rename
+Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
-Plug 'tmsvg/pear-tree'
 " Additional text objects to operate
 Plug 'wellle/targets.vim'
 " Indent text object
@@ -36,6 +37,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " Change working directory to project root
 Plug 'airblade/vim-rooter'
+" Status line
+Plug 'vim-airline/vim-airline'
 " Highlight yanked text
 Plug 'machakann/vim-highlightedyank'
 
@@ -113,8 +116,30 @@ autocmd FileType * set formatoptions+=r
 set splitbelow
 set splitright
 
-" Disable auto pair repeat
-let g:pear_tree_repeatable_expand = 0
+" " Disable auto pair repeat
+" let g:pear_tree_repeatable_expand = 0
+
+" When <CR> is pressed inside an empty pair, an empty line is inserted
+" between the opening and closing characters
+let delimitMate_expand_cr = 1
+
+" When <space> is pressed inside an empty pair, an additional space is
+" inserted between the opening and closing characters
+let delimitMate_expand_space = 1
+
+" Disable default mode indicator, since we are using vim-airline
+set noshowmode
+
+" vim-airline current position information
+" Item meanings:
+" 	%p: percentage in file
+" 	%%: percent sign
+" 	%l: line number
+" 	%L: number of lines in buffer
+"	%c: column number
+"	%v: virtual column number
+"	%V: virtual column number as -{num}; not displayed if equal to %c
+let g:airline_section_z = '%p%% %#__accent_bold#%{g:airline_symbols.linenr}%l%#__restore__#/%L%#__accent_bold#:%c%V%#__restore__#'
 
 " Auto detect Arduino .cpp files by looking for '#include <Arduino.h>' directive
 function! s:DetectArduinoFile()
@@ -156,16 +181,6 @@ autocmd BufRead,BufWrite *.{c++,cc,cp,cpp,cxx,C,CPP,h,hh,hpp} call s:DetectArdui
 autocmd BufNewFile,BufRead *.m set filetype=octave
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" COC
-
-" Navigate through Coc completion with <Tab> and <S-Tab>
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Close preview with <Esc>
-" inoremap <expr> <Esc> pumvisible() ? "\<C-d>" : "\<Esc>"
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " FZF
 
 " Redefine fzf rg command to search only file content (excluding file names)
@@ -176,3 +191,102 @@ nnoremap <silent> <C-p> :FZF<CR>
 
 " Launch fzf rg command with <Ctrl>n
 nnoremap <silent> <C-n> :Rg<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" COC
+
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Navigate through Coc completion with <Tab> and <S-Tab>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>

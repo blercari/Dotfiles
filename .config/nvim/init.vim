@@ -1,4 +1,6 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGINS
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " vim-plug installation (plugins will be installed on first Neovim startup)
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
@@ -16,20 +18,22 @@ call plug#begin('~/.vim/plugged')
 
 " Gruvbox theme
 Plug 'morhetz/gruvbox'
+" Improved syntax highlighting for multiple languages
+Plug 'sheerun/vim-polyglot'
+" Highlight color codes
+Plug 'ap/vim-css-color'
+" Highlight yanked text
+Plug 'machakann/vim-highlightedyank'
 " Comments
 Plug 'tpope/vim-commentary'
 " Automatically insert or delete brackets, parentheses, quotes, etc.
 " Plug 'tmsvg/pear-tree'  " pear-tree conflicts with coc-rename
 Plug 'Raimondi/delimitMate'
 " Plug 'jiangmiao/auto-pairs'
-" Additional text objects to operate
+" Additional text objects to operate with
 Plug 'wellle/targets.vim'
 " Indent text object
 Plug 'michaeljsmith/vim-indent-object'
-" Improved syntax highlighting for multiple languages
-Plug 'sheerun/vim-polyglot'
-" Highlight color codes
-Plug 'ap/vim-css-color'
 " Coc completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " fzf fuzzy finder
@@ -39,29 +43,12 @@ Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 " Status line
 Plug 'vim-airline/vim-airline'
-" Highlight yanked text
-Plug 'machakann/vim-highlightedyank'
 
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" THEME
-
-" True color support
-set termguicolors
-
-let g:gruvbox_bold = '0'
-let g:gruvbox_italic = '1'
-
-let g:gruvbox_contrast_dark = 'hard'
-
-" Cursor background while search is highlighted
-let g:gruvbox_hls_cursor = 'red'
-
-colorscheme gruvbox
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " GENERAL
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Tab and indentation width
 set tabstop=4
@@ -73,79 +60,38 @@ set number relativenumber
 " Highlight current line
 autocmd VimEnter,WinEnter,BufWinEnter * set cursorline
 
-" Invisible characters
-set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
+" Minimum number of lines to keep above/below cursor
+set scrolloff=1
 
-" Use <Space> as <Leader>
-map <Space> <Leader>
-
-" Remap 'jk' to <Esc> in insert mode
-inoremap jk <Esc>
-
-" Yank to end of line with 'Y'
-noremap Y y$
-
-" Open terminal in currently open file directory
-noremap <silent> <C-\> :lcd %:p:h<CR> :!konsole&<CR><CR> :lcd -<CR>
-
-" " Stop search highlighting when entering insert mode
-" autocmd InsertEnter * setlocal nohlsearch
-" nnoremap n :set hlsearch<CR>n
-" nnoremap N :set hlsearch<CR>N
-" nnoremap / :set hlsearch<CR>/
-" nnoremap ? :set hlsearch<CR>?
-
-" Toggle search highlight with <Leader>h and <BS>
-nnoremap <silent><expr> <Leader>h
-	\ (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-nnoremap <silent><expr> <BS>
-	\ (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-
-" Mouse support
-set mouse=a
-
-" Share system clipboard
-set clipboard=unnamedplus
-
-" Do not insert current comment leader when hitting 'o' in normal mode
-autocmd FileType * set formatoptions-=o
-" Insert current comment leader when hitting <Enter> in insert mode
-autocmd FileType * set formatoptions+=r
+" Command mode tab completion: first `<Tab>` completes partial match and
+" displays menu, subsequent `<Tab>`s cycle through menu entries
+set wildmode=longest:full,full
 
 " New split location
 set splitbelow
 set splitright
 
-" " Disable auto pair repeat
-" let g:pear_tree_repeatable_expand = 0
+" Share system clipboard
+set clipboard=unnamedplus
 
-" When <CR> is pressed inside an empty pair, an empty line is inserted
-" between the opening and closing characters
-let delimitMate_expand_cr = 1
+" Mouse support
+set mouse=a
 
-" When <space> is pressed inside an empty pair, an additional space is
-" inserted between the opening and closing characters
-let delimitMate_expand_space = 1
+" Invisible characters
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 
-" Disable default mode indicator, since we are using vim-airline
-set noshowmode
+" Do not insert current comment leader when hitting `o` in normal mode
+autocmd FileType * set formatoptions-=o
+" Insert current comment leader when hitting `<Enter>` in insert mode
+autocmd FileType * set formatoptions+=r
 
-" vim-airline current position information
-" Item meanings:
-" 	%p: percentage in file
-" 	%%: percent sign
-" 	%l: line number
-" 	%L: number of lines in buffer
-"	%c: column number
-"	%v: virtual column number
-"	%V: virtual column number as -{num}; not displayed if equal to %c
-let g:airline_section_z = '%p%% %#__accent_bold#%{g:airline_symbols.linenr}%l%#__restore__#/%L%#__accent_bold#:%c%V%#__restore__#'
+" Auto detect Octave .m files
+autocmd BufNewFile,BufRead *.m set filetype=octave
 
-" Auto detect Arduino .cpp files by looking for '#include <Arduino.h>' directive
+" Auto detect Arduino .cpp files by looking for `#include <Arduino.h>` directive
 function! s:DetectArduinoFile()
 	let file_path = expand('%:p')
 	let number_of_lines = system('wc -l ' . file_path)
-
 	let i = 1
 	while i <= number_of_lines
 		let line = getline(i)
@@ -177,93 +123,181 @@ function! s:DetectArduinoFile()
 endfun
 autocmd BufRead,BufWrite *.{c++,cc,cp,cpp,cxx,C,CPP,h,hh,hpp} call s:DetectArduinoFile()
 
-" Auto detect Octave .m files
-autocmd BufNewFile,BufRead *.m set filetype=octave
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" KEYBINDINGS
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Use `<Space>` as `<Leader>`
+map <Space> <Leader>
+
+" Remap `jk` to `<Esc>` in insert mode
+inoremap jk <Esc>
+
+" Yank to end of line with `Y`
+noremap Y y$
+
+" Open terminal in currently open file directory with `<C-\>`
+noremap <silent> <C-\> :lcd %:p:h<CR> :!konsole&<CR><CR> :lcd -<CR>
+
+" Toggle search highlight with `<Leader>hl` and `<BS>`
+nnoremap <silent><expr> <Leader>hl
+	\ (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+nnoremap <silent><expr> <BS>
+	\ (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+
+" " Disable search highlighting when entering insert mode
+" autocmd InsertEnter * setlocal nohlsearch
+" nnoremap n :set hlsearch<CR>n
+" nnoremap N :set hlsearch<CR>N
+" nnoremap / :set hlsearch<CR>/
+" nnoremap ? :set hlsearch<CR>?
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGIN SETUP
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" THEME
+
+" True color support
+set termguicolors
+
+let g:gruvbox_bold = '0'
+let g:gruvbox_italic = '1'
+
+let g:gruvbox_contrast_dark = 'hard'
+
+let g:gruvbox_invert_selection= '0'
+
+" Make signcolumn background the same as the number column
+let g:gruvbox_sign_column = 'bg0'
+
+" Cursor background while search is highlighted
+let g:gruvbox_hls_cursor = 'red'
+
+colorscheme gruvbox
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM-POLYGLOT
+
+" Don't highlight trailing spaces in Python
+let g:python_highlight_space_errors = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM-AIRLINE
+
+" Disable default mode indicator, since we are using vim-airline
+set noshowmode
+
+" Current position information
+" Item meanings:
+" 	%p: percentage in file
+" 	%%: percent sign
+" 	%l: line number
+" 	%L: number of lines in buffer
+"	%c: column number
+"	%v: virtual column number
+"	%V: virtual column number as -{num}; not displayed if equal to %c
+let g:airline_section_z = '%p%% %#__accent_bold#%{g:airline_symbols.linenr}%l%#__restore__#/%L%#__accent_bold#:%c%V%#__restore__#'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AUTO PAIRS
+
+" " Disable auto pair repeat
+" let g:pear_tree_repeatable_expand = 0
+
+" When <CR> is pressed inside an empty pair, an empty line is inserted
+" between the opening and closing characters
+let delimitMate_expand_cr = 1
+
+" When <space> is pressed inside an empty pair, an additional space is
+" inserted between the opening and closing characters
+let delimitMate_expand_space = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " FZF
 
-" Redefine fzf rg command to search only file content (excluding file names)
+" Redefine fzf `Rg` command to search only file content (excluding file names)
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --hidden --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 
-" Launch fzf default command with <Ctrl>p
+" Launch fzf default command with `<Ctrl>p`
 nnoremap <silent> <C-p> :FZF<CR>
 
-" Launch fzf rg command with <Ctrl>n
+" Launch fzf `Rg` command with `<Ctrl>n`
 nnoremap <silent> <C-n> :Rg<CR>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COC
 
-" TextEdit might fail if hidden is not set.
+" TextEdit might fail if hidden is not set
 set hidden
 
-" Some servers have issues with backup files, see #649.
+" Some servers have issues with backup files, see #649
 set nobackup
 set nowritebackup
 
-" Give more space for displaying messages.
+" Give more space for displaying messages
 set cmdheight=2
 
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
+" Having longer updatetime (default is 4000ms = 4s) leads to
+" noticeable delays and poor user experience
 set updatetime=300
 
-" Don't pass messages to |ins-completion-menu|.
+" Don't pass messages to |ins-completion-menu|
 set shortmess+=c
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
+" Always show the signcolumn, otherwise it would shift the text each
+" time diagnostics appear/become resolved
 if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
+	" Recently Vim can merge signcolumn and number column into one
+	set signcolumn=number
 else
-  set signcolumn=yes
+	set signcolumn=yes
 endif
 
-" Navigate through Coc completion with <Tab> and <S-Tab>
+" Navigate through Coc completion with `<Tab>` and `<S-Tab>`
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" Use <c-space> to trigger completion.
+" Use `<C-Space>` to trigger completion
 if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
+	inoremap <silent><expr> <C-Space> coc#refresh()
 else
-  inoremap <silent><expr> <c-@> coc#refresh()
+	inoremap <silent><expr> <C-@> coc#refresh()
 endif
 
 " Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in
+" location list
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" GoTo code navigation.
+" GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window.
+" Use `K` to show documentation in preview window
+function! s:show_documentation()
+	if (index(['vim','help'], &filetype) >= 0)
+		execute 'h '.expand('<cword>')
+	elseif (coc#rpc#ready())
+		call CocActionAsync('doHover')
+	else
+		execute '!' . &keywordprg . " " . expand('<cword>')
+	endif
+endfunction
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
+" Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+" Rename symbol with `<Leader>rn`
+nmap <Leader>rn <Plug>(coc-rename)
 
 " Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+" NOTE: Requires 'textDocument.documentSymbol' support from the
+" language server
 xmap if <Plug>(coc-funcobj-i)
 omap if <Plug>(coc-funcobj-i)
 xmap af <Plug>(coc-funcobj-a)
@@ -273,20 +307,20 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Mappings for CocList
+" Show all diagnostics
+nnoremap <silent><nowait> <Leader>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent><nowait> <Leader>e  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <Leader>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent><nowait> <Leader>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent><nowait> <Leader>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item
+nnoremap <silent><nowait> <Leader>j  :<C-u>CocNext<CR>
+" Do default action for previous item
+nnoremap <silent><nowait> <Leader>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent><nowait> <Leader>p  :<C-u>CocListResume<CR>

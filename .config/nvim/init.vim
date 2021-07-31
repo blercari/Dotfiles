@@ -36,6 +36,8 @@ Plug 'wellle/targets.vim'
 Plug 'michaeljsmith/vim-indent-object'
 " Coc completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Latex 
+Plug 'lervag/vimtex'
 " fzf fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'

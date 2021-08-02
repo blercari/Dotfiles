@@ -63,6 +63,18 @@ if type rg &> /dev/null; then
 	export FZF_DEFAULT_OPTS='--bind=btab:up,tab:down --layout=reverse --no-multi'
 fi
 
+# Anaconda
+# default Anaconda initialization is automatically placed at `~/.zshrc` even if
+# the user's Zsh config file is not `~/.zshrc` (e.g. it may be
+# `.config/zsh/.zshrc`); if `bin` and `condabin` directories exist inside
+# `~/anaconda3` (the default installation path), as well as `~/.zshrc` we proceed
+# to source the initialization script, which should be the only thing inside
+# `~/.zshrc`
+if [[ -d "$HOME/anaconda3/bin" && -d "$HOME/anaconda3/condabin"
+	&& -f "$HOME/.zshrc" ]]; then
+	source $HOME/.zshrc
+fi
+
 ################################################################################
 # PROMPT
 

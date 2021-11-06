@@ -146,17 +146,22 @@ zstyle :compinstall filename '$HOME/.zshrc'
 
 autoload -Uz compinit
 
-zmodload zsh/complist
+# zmodload zsh/complist
 
-# MENU
-# Highlight menu selection
-zstyle ':completion:*' menu select
-# <Shift+Tab> navigates backwards in menu
-bindkey -M menuselect '^[[Z' reverse-menu-complete
-# Run command when <Enter> is pressed in menu
-bindkey -M menuselect '^M' .accept-line
-# <Esc> exits menu and leaves command line untouched
-bindkey -M menuselect '\e' send-break
+# # MENU
+# # Highlight menu selection
+# zstyle ':completion:*' menu select
+# # <Shift+Tab> navigates backwards in menu
+# bindkey -M menuselect '^[[Z' reverse-menu-complete
+# # Run command when <Enter> is pressed in menu
+# bindkey -M menuselect '^M' .accept-line
+# # <Esc> exits menu and leaves command line untouched
+# bindkey -M menuselect '\e' send-break
+
+# Disable cycling through menu when hitting <Tab> more than once
+unsetopt automenu
+# Show completion menu on second <Tab> hit on ambiguous completion
+setopt bashautolist
 
 # Colored completion (different colors for dirs/files/etc)
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"

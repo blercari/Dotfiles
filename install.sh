@@ -4,7 +4,7 @@ dotfiles_dir=$(dirname $(readlink -f $0))
 
 source $dotfiles_dir/prompt-for-multiselect.sh
 
-components=("Bash" "Zsh" "Neovim" "Qtile" "AwesomeWM" "Redshift" "Volume control script")
+components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "Volume control script")
 
 ###############################################################################
 # ASK USER WHAT TO INSTALL
@@ -66,22 +66,15 @@ if [[ " ${checked[@]} " =~ " ${components[3]} " ]]; then
 	ln -s $dotfiles_dir/.config/qtile $HOME/.config
 fi
 
-# Awesome
-if [[ " ${checked[@]} " =~ " ${components[4]} " ]]; then
-	mkdir -p $HOME/.config
-	rm -rf $HOME/.config/awesome
-	ln -s $dotfiles_dir/.config/awesome $HOME/.config
-fi
-
 # Redshift
-if [[ " ${checked[@]} " =~ " ${components[5]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[4]} " ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/redshift
 	ln -s $dotfiles_dir/.config/redshift $HOME/.config
 fi
 
 # Volume control script
-if [[ " ${checked[@]} " =~ " ${components[6]} " ]]; then
+if [[ " ${checked[@]} " =~ " ${components[5]} " ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/volctl $HOME/.local/bin
 fi

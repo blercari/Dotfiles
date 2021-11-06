@@ -40,6 +40,7 @@ fi
 # Bash
 if [[ " ${checked[@]} " =~ " ${components[0]} " ]]; then
 	ln -sf $dotfiles_dir/.bashrc $HOME
+	ln -sf $dotfiles_dir/.bash_profile $HOME
 fi
 
 # Zsh

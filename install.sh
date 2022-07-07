@@ -38,13 +38,13 @@ if [[ -z ${checked} ]]; then
 fi
 
 # Bash
-if [[ " ${checked[@]} " =~ " ${components[0]} " ]]; then
+if [[ " ${checked[@]} " =~ "Bash" ]]; then
 	ln -sf $dotfiles_dir/.bashrc $HOME
 	ln -sf $dotfiles_dir/.bash_profile $HOME
 fi
 
 # Zsh
-if [[ " ${checked[@]} " =~ " ${components[1]} " ]]; then
+if [[ " ${checked[@]} " =~ "Zsh" ]]; then
 	ln -sf $dotfiles_dir/.zshenv $HOME
 	mkdir -p $HOME/.config
 	mkdir -p $HOME/.cache/zsh
@@ -53,7 +53,7 @@ if [[ " ${checked[@]} " =~ " ${components[1]} " ]]; then
 fi
 
 # Neovim
-if [[ " ${checked[@]} " =~ " ${components[2]} " ]]; then
+if [[ " ${checked[@]} " =~ "Neovim" ]]; then
 	rm -f $HOME/.local/share/nvim/site/autoload/plug.vim
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/nvim
@@ -61,21 +61,21 @@ if [[ " ${checked[@]} " =~ " ${components[2]} " ]]; then
 fi
 
 # Qtile
-if [[ " ${checked[@]} " =~ " ${components[3]} " ]]; then
+if [[ " ${checked[@]} " =~ "Qtile" ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/qtile
 	ln -s $dotfiles_dir/.config/qtile $HOME/.config
 fi
 
 # Redshift
-if [[ " ${checked[@]} " =~ " ${components[4]} " ]]; then
+if [[ " ${checked[@]} " =~ "Redshift" ]]; then
 	mkdir -p $HOME/.config
 	rm -rf $HOME/.config/redshift
 	ln -s $dotfiles_dir/.config/redshift $HOME/.config
 fi
 
 # Volume control script
-if [[ " ${checked[@]} " =~ " ${components[5]} " ]]; then
+if [[ " ${checked[@]} " =~ "Volume control script" ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/volctl $HOME/.local/bin
 fi

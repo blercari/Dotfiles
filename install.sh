@@ -6,11 +6,11 @@ source $dotfiles_dir/prompt-for-multiselect.sh
 
 components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "Volume control script")
 
-###############################################################################
-# ASK USER WHAT TO INSTALL
-
 bold=$(tput bold)
 normal=$(tput sgr0)
+
+###############################################################################
+# ASK USER WHAT TO INSTALL
 
 echo -n "Choose config files to install (${bold}SPACE${normal} to select,"
 echo " ${bold}ENTER${normal} to confirm):"
@@ -26,8 +26,6 @@ for i in "${!SELECTED[@]}"; do
 		checked+=("${components[$i]}")
 	fi
 done
-
-unset bold normal
 
 ###############################################################################
 # INSTALLATION
@@ -78,4 +76,21 @@ fi
 if [[ " ${checked[@]} " =~ "Volume control script" ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/volctl $HOME/.local/bin
+fi
+
+###############################################################################
+# PROMPT USER FOR CHANGING DEFAULT SHELL TO ZSH, IF IT WAS INTSTALLED
+
+if [[ " ${checked[@]} " =~ "Zsh" ]]; then
+	echo ""
+
+	ans=""
+	while [[ $ans != "y" && $ans != "n" ]]; do
+		read -p "Set Zsh as default shell? [y/n] " ans
+	done
+
+	if [[ $ans == "y" ]]; then
+		chsh --shell /usr/bin/zsh $USER \
+		|| echo "${bold}Unable to set default shell to Zsh${normal}"
+	fi
 fi

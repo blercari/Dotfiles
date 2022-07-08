@@ -43,11 +43,39 @@ fi
 
 # Zsh
 if [[ " ${checked[@]} " =~ "Zsh" ]]; then
+	# Link config files
 	ln -sf $dotfiles_dir/.zshenv $HOME
 	mkdir -p $HOME/.config
 	mkdir -p $HOME/.cache/zsh
 	rm -rf $HOME/.config/zsh
 	ln -s $dotfiles_dir/.config/zsh $HOME/.config
+
+	# Install plugins
+
+	zsh_plugin_dir="$HOME/.local/share/zsh/plugins"
+	mkdir -p $zsh_plugin_dir
+
+	echo -e "\nInstalling Zsh plugins..."
+
+	# zsh-syntax-highlighting
+	rm -rf $zsh_plugin_dir/zsh-syntax-highlighting
+	git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.git \
+	$zsh_plugin_dir/zsh-syntax-highlighting \
+	|| echo "${bold}Unable to install zsh-syntax-highlighting plugin${normal}"
+
+	# zsh-history-substring-search
+	rm -rf $zsh_plugin_dir/zsh-history-substring-search
+	git clone --quiet https://github.com/zsh-users/zsh-history-substring-search.git \
+	$zsh_plugin_dir/zsh-history-substring-search \
+	|| echo "${bold}Unable to install zsh-history-substring-search plugin${normal}"
+
+	# zsh-vim-mode
+	rm -rf $zsh_plugin_dir/zsh-vim-mode
+	git clone --quiet https://github.com/softmoth/zsh-vim-mode.git \
+	$zsh_plugin_dir/zsh-vim-mode \
+	|| echo "${bold}Unable to install zsh-vim-mode plugin${normal}"
+
+	unset zsh_plugin_dir
 fi
 
 # Neovim

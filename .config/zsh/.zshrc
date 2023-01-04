@@ -22,11 +22,10 @@ setopt histfindnodups
 setopt globdots
 
 # Change terminal title
-term_name=$(pstree -sA $$ | head -n1)
-term_name=$(echo $term_name | awk -F "-[-+]-" '{ print $(NF-2) }')
-term_name="$(tr '[:lower:]' '[:upper:]' <<< ${term_name:0:1})${term_name:1}"
 case ${TERM} in
 	xterm*|rxvt*|Eterm*|aterm|kterm|gnome*|interix|konsole*)
+		term_name=$(cat "/proc/$PPID/comm")
+		term_name="$(tr '[:lower:]' '[:upper:]' <<< ${term_name:0:1})${term_name:1}"
 		precmd () {print -Pn "\033]0;${PWD/#$HOME/\~} - ${term_name}\007"}
 		;;
 	screen*)

@@ -104,6 +104,9 @@ export KEYTIMEOUT=1
 # Fix backspace (behave as in vim rather than vi)
 bindkey -v '^?' backward-delete-char
 
+# Ctrl+R, search history in a Bash-like fashion, but `*` uses Zsh completion
+bindkey "^R" history-incremental-pattern-search-backward
+
 zmodload zsh/terminfo
 
 # Home key

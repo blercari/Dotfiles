@@ -74,6 +74,9 @@ if [[ -d "$HOME/anaconda3/bin" && -d "$HOME/anaconda3/condabin"
 	source $HOME/.zshrc
 fi
 
+# Pyenv
+source $ZDOTDIR/setup_zsh_for_pyenv.sh
+
 ################################################################################
 # PROMPT
 
@@ -252,3 +255,4 @@ MODE_CURSOR_REPLACE="steady underline"
 MODE_CURSOR_VISUAL="$MODE_CURSOR_VICMD"
 MODE_CURSOR_VLINE="$MODE_CURSOR_VISUAL"
 MODE_CURSOR_SEARCH="steady block"
+

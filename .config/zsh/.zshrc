@@ -256,3 +256,14 @@ MODE_CURSOR_VISUAL="$MODE_CURSOR_VICMD"
 MODE_CURSOR_VLINE="$MODE_CURSOR_VISUAL"
 MODE_CURSOR_SEARCH="steady block"
 
+# SYSTEM CLIPBOARD
+if [[ -f "$HOME/.local/share/zsh/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh" ]]; then
+	source $HOME/.local/share/zsh/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh
+elif [[ -f "$HOME/.local/share/zsh-system-clipboard/zsh-system-clipboard.zsh" ]]; then
+	source $HOME/.local/share/zsh-system-clipboard/zsh-system-clipboard.zsh
+elif [[ -f "/usr/share/zsh/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh" ]]; then
+	source /usr/share/zsh/plugins/zsh-system-clipboard/zsh-system-clipboard.zsh
+elif [[ -f "/usr/share/zsh-system-clipboard/zsh-system-clipboard.zsh" ]]; then
+	source /usr/share/zsh-system-clipboard/zsh-system-clipboard.zsh
+fi
+

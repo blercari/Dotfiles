@@ -75,6 +75,12 @@ if [[ " ${checked[@]} " =~ "Zsh" ]]; then
 	$zsh_plugin_dir/zsh-vim-mode \
 	|| echo "${bold}Unable to install zsh-vim-mode plugin${normal}"
 
+	# zsh-system-clipboard
+	rm -rf $zsh_plugin_dir/zsh-system-clipboard
+	git clone --quiet https://github.com/kutsan/zsh-system-clipboard.git \
+	$zsh_plugin_dir/zsh-system-clipboard \
+	|| echo "${bold}Unable to install zsh-system-clipboard plugin${normal}"
+
 	unset zsh_plugin_dir
 fi
 

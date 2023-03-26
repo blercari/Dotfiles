@@ -62,6 +62,34 @@ if type rg &> /dev/null; then
 	export FZF_DEFAULT_OPTS='--bind=btab:up,tab:down --layout=reverse --no-multi'
 fi
 
+get_terminal_luma () {
+	terminal_background_rgb=$(xtermcontrol --get-bg | awk -F: '{print $2}')
+
+	# xtermcontrol returns the RGB code in 16-bit hex notation (I think)
+	terminal_background_red_16bit_hex="0x$(echo $terminal_background_rgb | awk -F\/ '{print $1}')"
+	terminal_background_green_16bit_hex="0x$(echo $terminal_background_rgb | awk -F\/ '{print $2}')"
+	terminal_background_blue_16bit_hex="0x$(echo $terminal_background_rgb | awk -F\/ '{print $3}')"
+
+	# Convert RGB (in 16-bit hex notation) to luma (in 8-bit decimal notation)
+	luma_8bit_dec=$(((                              \
+		83 * terminal_background_red_16bit_hex      \
+		+ 278 * terminal_background_green_16bit_hex \
+		+ 28 * terminal_background_blue_16bit_hex   \
+	) / 100000))
+
+	echo $luma_8bit_dec
+}
+
+# Set an environment variable which indicates whether the terminal background
+# is light or dark. This is used by Neovim to select a suitable theme.
+if command -v xtermcontrol &> /dev/null; then
+	if [ $(get_terminal_luma) -gt 127 ]; then
+		export TERMINAL_BACKGROUND="light"
+	else
+		export TERMINAL_BACKGROUND="dark"
+	fi
+fi
+
 # Anaconda
 # default Anaconda initialization is automatically placed at `~/.zshrc` even if
 # the user's Zsh config file is not `~/.zshrc` (e.g. it may be

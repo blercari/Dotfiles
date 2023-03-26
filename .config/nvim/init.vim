@@ -166,6 +166,7 @@ set termguicolors
 let g:gruvbox_bold = '0'
 let g:gruvbox_italic = '1'
 
+let g:gruvbox_contrast_light = 'hard'
 let g:gruvbox_contrast_dark = 'hard'
 
 let g:gruvbox_invert_selection= '0'
@@ -175,6 +176,11 @@ let g:gruvbox_sign_column = 'bg0'
 
 " Cursor background while search is highlighted
 let g:gruvbox_hls_cursor = 'red'
+
+" Use the light theme when the terminal background is light
+if $TERMINAL_BACKGROUND=='light'
+  set background=light
+endif
 
 colorscheme gruvbox
 

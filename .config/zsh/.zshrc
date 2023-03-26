@@ -9,8 +9,8 @@
 
 # HISTORY
 HISTFILE=~/.cache/zsh/history
-HISTSIZE=1000
-SAVEHIST=10000
+HISTSIZE=10000
+SAVEHIST=100000
 # Do not add duplicates to history
 setopt histignoredups
 # Append to history after each command

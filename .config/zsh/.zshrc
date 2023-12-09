@@ -77,6 +77,10 @@ fi
 # Pyenv
 source $ZDOTDIR/setup_zsh_for_pyenv.sh
 
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 ################################################################################
 # PROMPT
 

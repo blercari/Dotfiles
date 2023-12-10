@@ -85,6 +85,9 @@ export NVM_DIR="$HOME/.nvm"
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+# Android Studio
+export ANDROID_HOME=$HOME/.local/opt/android/sdk
+
 ################################################################################
 # PROMPT
 

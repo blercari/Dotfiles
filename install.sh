@@ -4,7 +4,7 @@ dotfiles_dir=$(dirname $(readlink -f $0))
 
 source $dotfiles_dir/prompt-for-multiselect.sh
 
-components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "Volume control script")
+components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "Volume control script" "Hyprland")
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -110,6 +110,13 @@ fi
 if [[ " ${checked[@]} " =~ "Volume control script" ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/volctl $HOME/.local/bin
+fi
+
+# Hyprland
+if [[ " ${checked[@]} " =~ "Hyprland" ]]; then
+	mkdir -p $HOME/.config
+	rm -rf $HOME/.config/hypr
+	ln -s $dotfiles_dir/.config/hypr $HOME/.config
 fi
 
 ###############################################################################

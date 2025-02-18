@@ -110,6 +110,8 @@ fi
 if [[ " ${checked[@]} " =~ "KRunner runers scripts" ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/run-krunner-applications-plugin $HOME/.local/bin
+	ln -sf $dotfiles_dir/.local/bin/run-krunner-command-line-plugin $HOME/.local/bin
+	ln -sf $dotfiles_dir/.local/bin/run-krunner-file-search-plugin $HOME/.local/bin
 fi
 
 # Volume control script

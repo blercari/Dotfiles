@@ -4,7 +4,7 @@ dotfiles_dir=$(dirname $(readlink -f $0))
 
 source $dotfiles_dir/prompt-for-multiselect.sh
 
-components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "Run KRunner Applications plugin script" "Volume control script")
+components=("Bash" "Zsh" "Neovim" "Qtile" "Redshift" "KRunner runers scripts" "Volume control script")
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -106,8 +106,8 @@ if [[ " ${checked[@]} " =~ "Redshift" ]]; then
 	ln -s $dotfiles_dir/.config/redshift $HOME/.config
 fi
 
-# Run KRunner Applications plugin script
-if [[ " ${checked[@]} " =~ "Run KRunner Applications plugin script" ]]; then
+# KRunner runers scripts
+if [[ " ${checked[@]} " =~ "KRunner runers scripts" ]]; then
 	mkdir -p $HOME/.local/bin
 	ln -sf $dotfiles_dir/.local/bin/run-krunner-applications-plugin $HOME/.local/bin
 fi
